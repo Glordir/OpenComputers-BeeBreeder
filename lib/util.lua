@@ -19,7 +19,7 @@ end
 ---Prints the passed variable
 ---@param var any
 ---@param output table?
----@param level number?
+---@param level integer?
 ---@param indent_first_line boolean?
 function util.prettyPrint(var, output, level, indent_first_line)
     output = output or io.stdout

@@ -10,7 +10,7 @@ local chest = Chest(transposer, 1)
 ---Print the bee in a pretty format
 ---@param bee Bee
 local function printBee(bee)
-    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee.native_bee.label)
+    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee:getSpecies())
 end
 
 

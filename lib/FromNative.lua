@@ -11,6 +11,8 @@ function FromNative.territory(width)
         return 1
     elseif width == 11 then
         return 2
+    elseif width == 13 then
+        return 3
     elseif width == 15 then
         return 3
     end

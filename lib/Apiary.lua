@@ -10,7 +10,7 @@ local Inventory = require "Inventory"
 local APIARY_SLOTS = {
     drone = 2,
     princess = 1,
-    ---@type number[]
+    ---@type integer[]
     frames = {10, 11, 12}
 }
 

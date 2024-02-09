@@ -1,4 +1,5 @@
 local FromNative = require "FromNative"
+local booleanToInt = require "util".booleanToInt
 
 
 ---@alias Fertility 1 | 2 | 3 | 4
@@ -7,7 +8,8 @@ local FromNative = require "FromNative"
 ---@alias Territory
 ---| 1 # Average: 9x6x9
 ---| 2 # Large: 11x8x11
----| 3 # Largest: 15x13x15
+---| 3 # Larger: 13x?x13
+---| 4 # Largest: 15x13x15
 
 
 ---@alias Pollination
@@ -58,19 +60,8 @@ local FromNative = require "FromNative"
 
 
 ---@class BeeTraits
----@field private fertility Fertility
----@field private territory Territory
----@field private pollination Pollination
----@field private production_speed ProductionSpeed
----@field private flower Flower
----@field private effect Effect
+---@field private traits integer
 ---@field private species string
----@field private lifespan Lifespan
----@field private temperature_tolerance Tolerance
----@field private tolerant_flyer boolean
----@field private nocturnal boolean
----@field private cave_dwelling boolean
----@field private humidity_tolerance Tolerance
 ---
 local BeeTraits = setmetatable({}, {__call = function (bee_traits, ...)
     return bee_traits.new(...)
@@ -82,102 +73,117 @@ end})
 ---@return BeeTraits
 ---
 function BeeTraits.new(native_bee_traits)
-    local instance = setmetatable({
-        fertility = native_bee_traits.fertility,
-        territory = FromNative.territory(native_bee_traits.territory[0]),
-        pollination = FromNative.pollination(native_bee_traits.flowering),
-        production_speed = FromNative.productionSpeed(native_bee_traits.speed),
-        flower = FromNative.flower(native_bee_traits.flowerProvider),
-        effect = FromNative.effect(native_bee_traits.effect),
-        species = native_bee_traits.species.name,
-        lifespan = FromNative.lifespan(native_bee_traits.lifespan),
-        temperature_tolerance = FromNative.tolerance(native_bee_traits.temperatureTolerance),
-        tolerant_flyer = native_bee_traits.tolerantFlyer,
-        nocturnal = native_bee_traits.nocturnal,
-        cave_dwelling = native_bee_traits.caveDwelling,
-        humidity_tolerance = FromNative.tolerance(native_bee_traits.humidityTolerance)
-    },
-    {__index = BeeTraits}) --[[@as BeeTraits]]
+    local data = {}
+    table.insert(data, native_bee_traits.species.name)
 
+    local fertility = native_bee_traits.fertility
+    local territory = FromNative.territory(native_bee_traits.territory[1])
+    local pollination = FromNative.pollination(native_bee_traits.flowering)
+    local production_speed = FromNative.productionSpeed(native_bee_traits.speed)
+    local flower = FromNative.flower(native_bee_traits.flowerProvider)
+    local effect = FromNative.effect(native_bee_traits.effect)
+    local lifespan = FromNative.lifespan(native_bee_traits.lifespan)
+    local temperature_tolerance = FromNative.tolerance(native_bee_traits.temperatureTolerance)
+    local tolerant_flyer = native_bee_traits.tolerantFlyer
+    local nocturnal = native_bee_traits.nocturnal
+    local cave_dwelling = native_bee_traits.caveDwelling
+    local humidity_tolerance = FromNative.tolerance(native_bee_traits.humidityTolerance)
+
+    local traits = (fertility << 37) |
+        (territory << 34) |
+        (pollination << 30) |
+        (production_speed << 26) |
+        (flower << 21) |
+        (effect << 15) |
+        (lifespan << 11) |
+        (temperature_tolerance << 7) |
+        (booleanToInt(tolerant_flyer) << 6) |
+        (booleanToInt(nocturnal) << 5) |
+        (booleanToInt(cave_dwelling) << 4) |
+        humidity_tolerance
+
+    table.insert(data, traits)
+
+    local instance = setmetatable(data, {__index = BeeTraits}) --[[@as BeeTraits]]
     return instance
 end
 
 
 ---@return Fertility
 function BeeTraits:getFertility()
-    return self.fertility
+    return (self[2] & 0xE000000000) >> 37
 end
 
 
 ---@return Territory
 function BeeTraits:getTerritory()
-    return self.territory
+    return (self[2] & 0x1C00000000) >> 34
 end
 
 
 ---@return Pollination
 function BeeTraits:getPollination()
-    return self.pollination
+    return (self[2] & 0x3C0000000) >> 30
 end
 
 
 ---@return ProductionSpeed
 function BeeTraits:getProductionSpeed()
-    return self.production_speed
+    return (self[2] & 0x3C000000) >> 26
 end
 
 
 ---@return Flower
 function BeeTraits:getFlower()
-    return self.flower
+    return (self[2] & 0x3E00000) >> 21
 end
 
 
 ---@return Effect
 function BeeTraits:getEffect()
-    return self.effect
+    return (self[2] & 0x1F8000) >> 15
 end
 
 
 ---@return string
 function BeeTraits:getSpecies()
-    return self.species
+    return self[1]
 end
 
 
 ---@return Lifespan
 function BeeTraits:getLifespan()
-    return self.lifespan
+    return (self[2] & 0x7800) >> 11
 end
 
 
 ---@return Tolerance
 function BeeTraits:getTemperatureTolerance()
-    return self.temperature_tolerance
+    return (self[2] & 0x780) >> 7
 end
 
 
 ---@return boolean
 function BeeTraits:isTolerantFlyer()
-    return self.tolerant_flyer
+    return (self[2] & 0x40) == 0x40
 end
 
 
 ---@return boolean
 function BeeTraits:isNocturnal()
-    return self.nocturnal
+    return (self[2] & 0x20) == 0x20
 end
 
 
 ---@return boolean
 function BeeTraits:isCaveDwelling()
-    return self.cave_dwelling
+    return (self[2] & 0x10) == 0x10
 end
 
 
 ---@return Tolerance
 function BeeTraits:getHumidityTolerance()
-    return self.humidity_tolerance
+    return self[2] & 0xF
 end
 
 

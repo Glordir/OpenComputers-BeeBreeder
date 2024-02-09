@@ -6,7 +6,7 @@ local Transposer = require "Transposer"
 
 ---@class BasicManager The basic manager of all physical connections and interactions.
 ---@field apiaries Apiary[]
----@field chests Inventory[]
+---@field chests Chest[]
 ---@field transposer Transposer
 local BasicManager = {}
 

@@ -9,12 +9,12 @@
 
 ---@class Location
 ---@field public side Side
----@field public slot number
+---@field public slot integer
 
 
 ---Creates a new Location
 ---@param side Side
----@param slot number
+---@param slot integer
 ---@return Location
 ---
 local function createLocation(side, slot)

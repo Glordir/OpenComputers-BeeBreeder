@@ -7,7 +7,7 @@ local prettyPrint = require("util").prettyPrint
 ---Print the bee in a pretty format
 ---@param bee Bee
 local function printBee(bee)
-    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee.native_bee.label)
+    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee:getSpecies())
 end
 
 
@@ -20,8 +20,4 @@ for _, bee in ipairs(bees.bees) do
 end
 
 writeVariableToFile(bees.bees[1], "bee.txt")
-
-
-local beeTraits = BeeTraits(bees.bees[1].native_bee.individual.active)
-writeVariableToFile(beeTraits, "beeTraits.txt")
-prettyPrint(beeTraits)
+prettyPrint(bees.bees[1])

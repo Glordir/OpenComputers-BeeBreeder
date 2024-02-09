@@ -31,7 +31,7 @@ end
 ---@return boolean true if the princess was moved
 ---
 function Transposer:movePrincess(princess, apiary)
-    return self:moveBee(princess, Location(apiary.side, apiary.slots.princess --[[@as number]]))
+    return self:moveBee(princess, Location(apiary.side, apiary.slots.princess --[[@as integer]]))
 end
 
 
@@ -41,7 +41,7 @@ end
 ---@return boolean true if the drone was moved
 ---
 function Transposer:moveDrone(drone, apiary)
-    return self:moveBee(drone, Location(apiary.side, apiary.slots.drone --[[@as number]]))
+    return self:moveBee(drone, Location(apiary.side, apiary.slots.drone --[[@as integer]]))
 end
 
 

@@ -5,11 +5,12 @@ local gpu = component.getPrimary("gpu")
 
 
 --- Config:
-local C = {log_level = "debug", logfile = nil}
+local C = {log_level = "debug", logfile = "log.txt"}
 
 
---- Helper Function (Forward Declaration):
+--- Helper Functions (Forward Declaration):
 local coloredPrint
+local logToFile
 
 
 --- Log:
@@ -19,8 +20,8 @@ local Log = {}
 local log_level_name_table = {debug = 0, info = 1, warn = 2, error = 3}
 Log.log_level = log_level_name_table[C.log_level]
 
-Log.logfile = C.logfile
-Log.write_to_file = Log.logfile ~= nil
+Log.write_to_file = C.logfile ~= nil
+Log.logfile = io.open(C.logfile, "w")
 
 
 function Log.debug(...)
@@ -28,7 +29,8 @@ function Log.debug(...)
         return
     end
 
-    coloredPrint(colors.lightblue, "[DEBUG] " .. ...)
+    coloredPrint(colors.lightblue, "[DEBUG] ", ...)
+    logToFile("[DEBUG] ", ...)
 end
 
 function Log.info(...)
@@ -36,7 +38,8 @@ function Log.info(...)
         return
     end
 
-    coloredPrint(colors.green, "[INFO] " .. ...)
+    coloredPrint(colors.green, "[INFO] ", ...)
+    logToFile("[INFO] ", ...)
 end
 
 function Log.warn(...)
@@ -44,19 +47,30 @@ function Log.warn(...)
         return
     end
 
-    coloredPrint(colors.yellow, "[WARN] " .. ...)
+    coloredPrint(colors.yellow, "[WARN] ", ...)
+    logToFile("[WARN] ", ...)
 end
 
 function Log.error(...)
-    coloredPrint(colors.red, "[ERROR] " .. ...)
+    coloredPrint(colors.red, "[ERROR] ", ...)
+    logToFile("[ERROR] ", ...)
 end
 
 
---- Helper Function (Implementation):
-function coloredPrint(color, ...)
-    local old_color = gpu.setForeground(color)
+--- Helper Functions (Implementation):
+coloredPrint = function (color, prefix, ...)
+    local old_color = gpu.setForeground(color, true)
+    io.write(prefix)
     print(...)
     gpu.setForeground(old_color)
+end
+
+
+logToFile = function (prefix, ...)
+    if Log.write_to_file then
+        Log.logfile:write(prefix)
+        Log.logfile:write(tostring(...) .. "\n")
+    end
 end
 
 

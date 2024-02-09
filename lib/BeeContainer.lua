@@ -1,5 +1,6 @@
 local Log = require "Log"
-local convertBee = require "Bee"
+local Bee = require "Bee"
+local prettyPrint = require "util".prettyPrint
 
 
 ---@class BeeContainer
@@ -19,10 +20,10 @@ end
 ---Adds the passed bee to the internal bee list
 ---@param native_bee table
 ---@param side Side
----@param slot number
+---@param slot integer
 ---
 function BeeContainer:addNativeBee(native_bee, side, slot)
-    local bee = convertBee(native_bee, side, slot)
+    local bee = Bee(native_bee, side, slot)
 
     self:addBees({bee})
 end
