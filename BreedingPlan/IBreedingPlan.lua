@@ -1,0 +1,6 @@
+-- @interface BreedingPlan
+-- @method Constructor(Bees available_bees)
+-- @method updateBees(Bees available_bees)
+-- @method getNextPair() -> Bee, Bee
+-- @method achievedGoal() -> boolean
+-- @method updateGoal()
