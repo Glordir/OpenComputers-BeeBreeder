@@ -47,12 +47,12 @@ local booleanToInt = require "util".booleanToInt
 
 
 ---@alias Tolerance
----| 1 # Down 3
----| 2 # Down 2
----| 3 # Down 1
----| 4 # None
----| 5 # Up 1
----| 6 # Up 2
+---| 1 # None
+---| 2 # Down 1
+---| 3 # Up 1
+---| 4 # Down 2
+---| 5 # Up 2
+---| 6 # Down 3
 ---| 7 # Up 3
 ---| 8 # Both 1
 ---| 9 # Both 2
@@ -104,8 +104,97 @@ function BeeTraits.new(native_bee_traits)
 
     table.insert(data, traits)
 
-    local instance = setmetatable(data, {__index = BeeTraits}) --[[@as BeeTraits]]
+    local instance = setmetatable(data, {__index = BeeTraits, __tostring = BeeTraits.toString})
     return instance
+end
+
+
+---Returns a copy of the BeeTraits instance
+---@return BeeTraits
+function BeeTraits:copy()
+    local data = {}
+    table.insert(data, self[1])
+    table.insert(data, self[2])
+
+    return setmetatable(data, getmetatable(self))
+end
+
+
+---@param fertility Fertility
+function BeeTraits:setFertility(fertility)
+    self[2] = (self[2] & ~0xE000000000) | (fertility << 37)
+end
+
+
+---@param territory Territory
+function BeeTraits:setTerritory(territory)
+    self[2] = (self[2] & ~0x1C00000000) | (territory << 34)
+end
+
+
+---@param pollination Pollination
+function BeeTraits:setPollination(pollination)
+    self[2] = (self[2] & ~0x3C0000000) | (pollination << 30)
+end
+
+
+---@param speed ProductionSpeed
+function BeeTraits:setProductionSpeed(speed)
+    self[2] = (self[2] & ~0x3C000000) | (speed << 26)
+end
+
+
+---@param flower Flower
+function BeeTraits:setFlower(flower)
+    self[2] = (self[2] & ~0x3E00000) | (flower << 21)
+end
+
+
+---@param effect Effect
+function BeeTraits:setEffect(effect)
+    self[2] = (self[2] & ~0x1F8000) | (effect << 15)
+end
+
+
+---@param species string
+function BeeTraits:setSpecies(species)
+    self[1] = species
+end
+
+
+---@param lifespan Lifespan
+function BeeTraits:setLifespan(lifespan)
+    self[2] = (self[2] & ~0x7800) | (lifespan << 11)
+end
+
+
+---@param tolerance Tolerance
+function BeeTraits:setTemperatureTolerance(tolerance)
+    self[2] = (self[2] & ~0x780) | (tolerance << 7)
+end
+
+
+---@param is_tolerant_flyer boolean
+function BeeTraits:setTolerantFlyer(is_tolerant_flyer)
+    self[2] = (self[2] & ~0x40) | (booleanToInt(is_tolerant_flyer) << 6)
+end
+
+
+---@param is_nocturnal boolean
+function BeeTraits:setNocturnal(is_nocturnal)
+    self[2] = (self[2] & ~0x20) | (booleanToInt(is_nocturnal) << 5)
+end
+
+
+---@param is_cave_dwelling boolean
+function BeeTraits:setCaveDwelling(is_cave_dwelling)
+    self[2] = (self[2] & ~0x10) | (booleanToInt(is_cave_dwelling) << 4)
+end
+
+
+---@param tolerance Tolerance
+function BeeTraits:setHumidityTolerance(tolerance)
+    self[2] = (self[2] & ~0xF) | tolerance
 end
 
 
@@ -184,6 +273,25 @@ end
 ---@return Tolerance
 function BeeTraits:getHumidityTolerance()
     return self[2] & 0xF
+end
+
+
+---Returns the string representation of the bee traits
+---@return string
+function BeeTraits:toString()
+    return "BeeTraits: { Fert: " .. self:getFertility() ..
+        ", Area: " .. self:getTerritory() ..
+        ", Poll: " .. self:getPollination() ..
+        ", ProdSpeed: " .. self:getProductionSpeed() ..
+        ", Flower: " .. self:getFlower() ..
+        ", Eff: " .. self:getEffect() ..
+        ", Spe: " .. self:getSpecies() ..
+        ", Life: " .. self:getLifespan() ..
+        ", TempTol: " .. self:getTemperatureTolerance() ..
+        ", HumTol: " .. self:getHumidityTolerance() ..
+        ", Rain: " .. tostring(self:isTolerantFlyer()) ..
+        ", Night: " .. tostring(self:isNocturnal()) ..
+        ", Cave: " .. tostring(self:isCaveDwelling()) .. " }"
 end
 
 

@@ -231,12 +231,12 @@ end
 
 
 local tolerance_string_to_number = {
-    ["Down 3"] = 1,
-    ["Down 2"] = 2,
-    ["Down 1"] = 3,
-    ["None"] = 4,
-    ["Up 1"] = 5,
-    ["Up 2"] = 6,
+    ["None"] = 1,
+    ["Down 1"] = 2,
+    ["Up 1"] = 3,
+    ["Down 2"] = 4,
+    ["Up 2"] = 5,
+    ["Down 3"] = 6,
     ["Up 3"] = 7,
     ["Both 1"] = 8,
     ["Both 2"] = 9,
@@ -250,8 +250,8 @@ local tolerance_string_to_number = {
 function FromNative.tolerance(tolerance_string)
     local tolerance = tolerance_string_to_number[tolerance_string]
     if tolerance == nil then
-        Log.warn("[FromNative.tolerance] cannot convert the given tolerance string '" .. tostring(tolerance_string) .. "' to an integer. Using default value 4 (None)")
-        return 4
+        Log.warn("[FromNative.tolerance] cannot convert the given tolerance string '" .. tostring(tolerance_string) .. "' to an integer. Using default value 1 (None)")
+        return 1
     end
     return tolerance
 end

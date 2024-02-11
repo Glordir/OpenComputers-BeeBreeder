@@ -10,12 +10,11 @@ local Log = require "log"
 
 
 ---@class Bee
----@field public active BeeTraits?
+---@field public active BeeTraits? Only exists for bees that are analyzed
 ---@field public gender Gender
----@field public inactive BeeTraits?
----@field public is_analyzed boolean
+---@field public inactive BeeTraits? Only exists for bees that are analyzed
 ---@field public location Location
----@field private species string?
+---@field private species string? Only exists for bees that are not analyzed
 ---
 local Bee = setmetatable({}, {__call = function (bee, ...)
     return bee.new(...)
@@ -63,11 +62,18 @@ end
 
 ---@return string
 function Bee:getSpecies()
-    if self.is_analyzed then
+    if self:isAnalyzed() then
         return self.active:getSpecies()
     else
         return self.species
     end
+end
+
+
+---Checks whether the bee is analyzed or not
+---@return boolean
+function Bee:isAnalyzed()
+    return self.active ~= nil
 end
 
 

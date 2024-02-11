@@ -30,7 +30,7 @@ end
 function BasicManager.getBees()
     local bee_container = BeeContainer()
     for _, chest in ipairs(BasicManager.chests) do
-        bee_container:addBees(chest:getBees().bees)
+        bee_container:addBees(chest:getBees())
     end
 
     return bee_container

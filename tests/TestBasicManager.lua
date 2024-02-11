@@ -13,8 +13,19 @@ BasicManager.init()
 local bees = BasicManager.getBees()
 
 
-for _, bee in ipairs(bees.bees) do
+for _, bee in ipairs(bees:getBees()) do
     printBee(bee)
 end
 
-writeVariableToFile(bees.bees, "bee.txt")
+print("Species: ")
+for species, _ in pairs(bees:getSpecies()) do
+    print(species)
+end
+
+print("\nFlowers: ")
+for flower, _ in pairs(bees:getFlowers()) do
+    print(flower)
+end
+
+print("\nlowest bee traits: ", bees:getLowestBeeTraits())
+print("\nhighest bee traits: ", bees:getHighestBeeTraits())
