@@ -37,7 +37,7 @@ function Chest:getBees()
 
     for slot, item in pairs(all_items) do
         if next(item) ~= nil and item.name ~= nil and string.find(item.name, "^Forestry:bee[DPQ]") then
-            bees:addNativeBee(item, self.side, slot)
+            bees:addNativeBee(item, self.side, slot + 1)
         end
     end
 

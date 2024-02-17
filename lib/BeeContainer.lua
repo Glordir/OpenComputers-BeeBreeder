@@ -75,7 +75,7 @@ function BeeContainer:updateStatistics(bee)
     end
 
     self:updateStatisticsTrait(bee, BeeTraits.getFertility, BeeTraits.setFertility)
-    self:updateStatisticsTrait(bee, BeeTraits.getTerritory, BeeTraits.setTerritory)
+    self:updateStatisticsTrait(bee, BeeTraits.getArea, BeeTraits.setArea)
     self:updateStatisticsTrait(bee, BeeTraits.getPollination, BeeTraits.setPollination)
     self:updateStatisticsTrait(bee, BeeTraits.getProductionSpeed, BeeTraits.setProductionSpeed)
     self:updateStatisticsTrait(bee, BeeTraits.getEffect, BeeTraits.setEffect)
@@ -124,6 +124,23 @@ function BeeContainer:updateStatisticsBooleanTrait(bee, getBooleanTrait, setBool
 
     setBooleanTrait(self.highest_bee_traits, active_fertility or inactive_fertility or current_highest_fertility)
     setBooleanTrait(self.lowest_bee_traits, active_fertility and inactive_fertility and current_lowest_fertility)
+end
+
+
+---Creates a new BeeContainer instance that contains only the bees where the filter returns true.
+---@param filter fun(bee: Bee): boolean
+---@return BeeContainer
+---
+function BeeContainer:filter(filter)
+    local filtered_bee_container = BeeContainer()
+
+    for _, bee in ipairs(self.bees) do
+        if filter(bee) then
+            filtered_bee_container:addBee(bee)
+        end
+    end
+
+    return filtered_bee_container
 end
 
 

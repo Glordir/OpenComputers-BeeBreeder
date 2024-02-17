@@ -5,7 +5,7 @@ local booleanToInt = require "util".booleanToInt
 ---@alias Fertility 1 | 2 | 3 | 4
 
 
----@alias Territory
+---@alias Area
 ---| 1 # Average: 9x6x9
 ---| 2 # Large: 11x8x11
 ---| 3 # Larger: 13x?x13
@@ -77,7 +77,7 @@ function BeeTraits.new(native_bee_traits)
     table.insert(data, native_bee_traits.species.name)
 
     local fertility = native_bee_traits.fertility
-    local territory = FromNative.territory(native_bee_traits.territory[1])
+    local area = FromNative.area(native_bee_traits.territory[1])
     local pollination = FromNative.pollination(native_bee_traits.flowering)
     local production_speed = FromNative.productionSpeed(native_bee_traits.speed)
     local flower = FromNative.flower(native_bee_traits.flowerProvider)
@@ -90,7 +90,7 @@ function BeeTraits.new(native_bee_traits)
     local humidity_tolerance = FromNative.tolerance(native_bee_traits.humidityTolerance)
 
     local traits = (fertility << 37) |
-        (territory << 34) |
+        (area << 34) |
         (pollination << 30) |
         (production_speed << 26) |
         (flower << 21) |
@@ -126,9 +126,9 @@ function BeeTraits:setFertility(fertility)
 end
 
 
----@param territory Territory
-function BeeTraits:setTerritory(territory)
-    self[2] = (self[2] & ~0x1C00000000) | (territory << 34)
+---@param area Area
+function BeeTraits:setArea(area)
+    self[2] = (self[2] & ~0x1C00000000) | (area << 34)
 end
 
 
@@ -204,8 +204,8 @@ function BeeTraits:getFertility()
 end
 
 
----@return Territory
-function BeeTraits:getTerritory()
+---@return Area
+function BeeTraits:getArea()
     return (self[2] & 0x1C00000000) >> 34
 end
 
@@ -280,7 +280,7 @@ end
 ---@return string
 function BeeTraits:toString()
     return "BeeTraits: { Fert: " .. self:getFertility() ..
-        ", Area: " .. self:getTerritory() ..
+        ", Area: " .. self:getArea() ..
         ", Poll: " .. self:getPollination() ..
         ", ProdSpeed: " .. self:getProductionSpeed() ..
         ", Flower: " .. self:getFlower() ..

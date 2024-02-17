@@ -1,12 +1,12 @@
-local Log = require "Log"
+local Log = require "log"
 
 
 local FromNative = {}
 
----Converts the native territory to my territory representation
+---Converts the native territory to my area representation
 ---@param width integer
----@return Territory
-function FromNative.territory(width)
+---@return Area
+function FromNative.area(width)
     if width == 9 then
         return 1
     elseif width == 11 then
@@ -17,7 +17,7 @@ function FromNative.territory(width)
         return 3
     end
 
-    Log.error("[FromNative.territory] cannot convert the given width '" .. tostring(width) .. "' to a valid territory. Using default value 1 (Average)")
+    Log.error("[FromNative.area] cannot convert the given width '" .. tostring(width) .. "' to a valid area. Using default value 1 (Average)")
     return 1
 end
 

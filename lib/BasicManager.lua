@@ -1,6 +1,6 @@
 local BeeContainer = require "BeeContainer"
 local Component = require "component"
-local Log = require "Log"
+local Log = require "log"
 local filter = require("util").filter
 local Transposer = require "Transposer"
 
@@ -49,7 +49,27 @@ end
 
 
 function BasicManager.sortAllBees(breeding_plan)
-    Log.warn("BasicManager.sortAllBees is not yet implemented")
+    Log.error("BasicManager.sortAllBees is not yet implemented")
+end
+
+
+---Move the passed be to the new location
+---@param bee Bee
+---@param new_location Location
+---
+function BasicManager.moveBee(bee, new_location)
+    BasicManager.transposer:moveBee(bee, new_location)
+end
+
+
+---Move the passed bees to the new location
+---@param bee_container BeeContainer
+---@param new_location Location
+---
+function BasicManager.moveBees(bee_container, new_location)
+    for _, bee in ipairs(bee_container:getBees()) do
+        BasicManager.moveBee(bee, new_location)
+    end
 end
 
 

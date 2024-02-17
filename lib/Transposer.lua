@@ -2,6 +2,7 @@ local Apiary = require "Apiary"
 local Chest = require "Chest"
 local Component = require "component"
 local Location = require "Location"
+local Log = require "log"
 
 
 ---@class Transposer
@@ -61,9 +62,26 @@ function Transposer:moveBee(bee, new_location)
 end
 
 
+---Move the bee into the specified chest.
+---@param bee Bee
+---@param chest Chest
+---@param amount integer? # Default value: all the bees in the slot
+---@return boolean # True if all bees were successfully moved
+---@return integer amount # The amount of bees that were successfully moved
+---
+function Transposer:moveBeeIntoChest(bee, chest, amount)
+    local bees_in_slot = self.proxy.getSlotStackSize(bee.location.side, bee.location.slot)
+    amount = amount or bees_in_slot
+
+    local moved_amount = self.proxy.transferItem(bee.location.side, chest.side, amount, bee.location.slot)
+    return moved_amount == amount, moved_amount
+end
+
+
 ---Gets all items in the specified inventory
 ---@param side Side
----@return table[]?
+---@return table[]? # The slot where the item is is equal to the index in the table + 1
+---
 function Transposer:getItems(side)
     if self.proxy.getInventorySize(side) == nil then
         return nil

@@ -1,4 +1,4 @@
-local Log = require "Log"
+local Log = require "log"
 local manager = require "BasicManager"
 
 local running = true
