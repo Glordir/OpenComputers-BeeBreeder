@@ -78,6 +78,23 @@ function Transposer:moveBeeIntoChest(bee, chest, amount)
 end
 
 
+---Move the bee into the specified slot in the specified chest.
+---@param bee Bee
+---@param chest Chest
+---@param target_slot integer
+---@param amount integer? # Default value: all the bees in the slot
+---@return boolean # True if all bees were successfully moved
+---@return integer amount # The amount of bees that were successfully moved
+---
+function Transposer:moveBeeIntoSlot(bee, chest, target_slot, amount)
+    local bees_in_slot = self.proxy.getSlotStackSize(bee.location.side, bee.location.slot)
+    amount = amount or bees_in_slot
+
+    local moved_amount = self.proxy.transferItem(bee.location.side, chest.side, amount, bee.location.slot, target_slot)
+    return moved_amount == amount, moved_amount
+end
+
+
 ---Gets all items in the specified inventory
 ---@param side Side
 ---@return table[]? # The slot where the item is is equal to the index in the table + 1
