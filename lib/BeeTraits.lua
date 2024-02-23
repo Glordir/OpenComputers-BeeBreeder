@@ -54,9 +54,15 @@ local booleanToInt = require "util".booleanToInt
 ---| 5 # Up 2
 ---| 6 # Down 3
 ---| 7 # Up 3
----| 8 # Both 1
----| 9 # Both 2
----| 10 # Both 3
+---| 8 # Down 4
+---| 9 # Up 4
+---| 10 # Down 5
+---| 11 # Up 5
+---| 12 # Both 1
+---| 13 # Both 2
+---| 14 # Both 3
+---| 15 # Both 4
+---| 16 # Both 5
 
 
 ---@class BeeTraits
@@ -89,17 +95,17 @@ function BeeTraits.new(native_bee_traits)
     local cave_dwelling = native_bee_traits.caveDwelling
     local humidity_tolerance = FromNative.tolerance(native_bee_traits.humidityTolerance)
 
-    local traits = (fertility << 37) |
-        (area << 34) |
-        (pollination << 30) |
-        (production_speed << 26) |
-        (flower << 21) |
-        (effect << 15) |
-        (lifespan << 11) |
-        (temperature_tolerance << 7) |
-        (booleanToInt(tolerant_flyer) << 6) |
-        (booleanToInt(nocturnal) << 5) |
-        (booleanToInt(cave_dwelling) << 4) |
+    local traits = (fertility << 39) |
+        (area << 36) |
+        (pollination << 32) |
+        (production_speed << 28) |
+        (flower << 23) |
+        (effect << 17) |
+        (lifespan << 13) |
+        (temperature_tolerance << 8) |
+        (booleanToInt(tolerant_flyer) << 7) |
+        (booleanToInt(nocturnal) << 6) |
+        (booleanToInt(cave_dwelling) << 5) |
         humidity_tolerance
 
     table.insert(data, traits)
@@ -122,37 +128,37 @@ end
 
 ---@param fertility Fertility
 function BeeTraits:setFertility(fertility)
-    self[2] = (self[2] & ~0xE000000000) | (fertility << 37)
+    self[2] = (self[2] & ~0x38000000000) | (fertility << 39)
 end
 
 
 ---@param area Area
 function BeeTraits:setArea(area)
-    self[2] = (self[2] & ~0x1C00000000) | (area << 34)
+    self[2] = (self[2] & ~0x7000000000) | (area << 36)
 end
 
 
 ---@param pollination Pollination
 function BeeTraits:setPollination(pollination)
-    self[2] = (self[2] & ~0x3C0000000) | (pollination << 30)
+    self[2] = (self[2] & ~0xF00000000) | (pollination << 32)
 end
 
 
 ---@param speed ProductionSpeed
 function BeeTraits:setProductionSpeed(speed)
-    self[2] = (self[2] & ~0x3C000000) | (speed << 26)
+    self[2] = (self[2] & ~0xF0000000) | (speed << 28)
 end
 
 
 ---@param flower Flower
 function BeeTraits:setFlower(flower)
-    self[2] = (self[2] & ~0x3E00000) | (flower << 21)
+    self[2] = (self[2] & ~0xF800000) | (flower << 23)
 end
 
 
 ---@param effect Effect
 function BeeTraits:setEffect(effect)
-    self[2] = (self[2] & ~0x1F8000) | (effect << 15)
+    self[2] = (self[2] & ~0x7E0000) | (effect << 17)
 end
 
 
@@ -164,73 +170,73 @@ end
 
 ---@param lifespan Lifespan
 function BeeTraits:setLifespan(lifespan)
-    self[2] = (self[2] & ~0x7800) | (lifespan << 11)
+    self[2] = (self[2] & ~0x1E000) | (lifespan << 13)
 end
 
 
 ---@param tolerance Tolerance
 function BeeTraits:setTemperatureTolerance(tolerance)
-    self[2] = (self[2] & ~0x780) | (tolerance << 7)
+    self[2] = (self[2] & ~0x1F00) | (tolerance << 8)
 end
 
 
 ---@param is_tolerant_flyer boolean
 function BeeTraits:setTolerantFlyer(is_tolerant_flyer)
-    self[2] = (self[2] & ~0x40) | (booleanToInt(is_tolerant_flyer) << 6)
+    self[2] = (self[2] & ~0x80) | (booleanToInt(is_tolerant_flyer) << 7)
 end
 
 
 ---@param is_nocturnal boolean
 function BeeTraits:setNocturnal(is_nocturnal)
-    self[2] = (self[2] & ~0x20) | (booleanToInt(is_nocturnal) << 5)
+    self[2] = (self[2] & ~0x40) | (booleanToInt(is_nocturnal) << 6)
 end
 
 
 ---@param is_cave_dwelling boolean
 function BeeTraits:setCaveDwelling(is_cave_dwelling)
-    self[2] = (self[2] & ~0x10) | (booleanToInt(is_cave_dwelling) << 4)
+    self[2] = (self[2] & ~0x20) | (booleanToInt(is_cave_dwelling) << 5)
 end
 
 
 ---@param tolerance Tolerance
 function BeeTraits:setHumidityTolerance(tolerance)
-    self[2] = (self[2] & ~0xF) | tolerance
+    self[2] = (self[2] & ~0x1F) | tolerance
 end
 
 
 ---@return Fertility
 function BeeTraits:getFertility()
-    return (self[2] & 0xE000000000) >> 37
+    return (self[2] & 0x38000000000) >> 39
 end
 
 
 ---@return Area
 function BeeTraits:getArea()
-    return (self[2] & 0x1C00000000) >> 34
+    return (self[2] & 0x7000000000) >> 36
 end
 
 
 ---@return Pollination
 function BeeTraits:getPollination()
-    return (self[2] & 0x3C0000000) >> 30
+    return (self[2] & 0xF00000000) >> 32
 end
 
 
 ---@return ProductionSpeed
 function BeeTraits:getProductionSpeed()
-    return (self[2] & 0x3C000000) >> 26
+    return (self[2] & 0xF0000000) >> 28
 end
 
 
 ---@return Flower
 function BeeTraits:getFlower()
-    return (self[2] & 0x3E00000) >> 21
+    return (self[2] & 0xF800000) >> 23
 end
 
 
 ---@return Effect
 function BeeTraits:getEffect()
-    return (self[2] & 0x1F8000) >> 15
+    return (self[2] & 0x7E0000) >> 17
 end
 
 
@@ -242,37 +248,37 @@ end
 
 ---@return Lifespan
 function BeeTraits:getLifespan()
-    return (self[2] & 0x7800) >> 11
+    return (self[2] & 0x1E000) >> 13
 end
 
 
 ---@return Tolerance
 function BeeTraits:getTemperatureTolerance()
-    return (self[2] & 0x780) >> 7
+    return (self[2] & 0x1F00) >> 8
 end
 
 
 ---@return boolean
 function BeeTraits:isTolerantFlyer()
-    return (self[2] & 0x40) == 0x40
+    return (self[2] & 0x80) == 0x80
 end
 
 
 ---@return boolean
 function BeeTraits:isNocturnal()
-    return (self[2] & 0x20) == 0x20
+    return (self[2] & 0x40) == 0x40
 end
 
 
 ---@return boolean
 function BeeTraits:isCaveDwelling()
-    return (self[2] & 0x10) == 0x10
+    return (self[2] & 0x20) == 0x20
 end
 
 
 ---@return Tolerance
 function BeeTraits:getHumidityTolerance()
-    return self[2] & 0xF
+    return self[2] & 0x1F
 end
 
 

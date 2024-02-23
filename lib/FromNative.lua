@@ -238,9 +238,15 @@ local tolerance_string_to_number = {
     ["Up 2"] = 5,
     ["Down 3"] = 6,
     ["Up 3"] = 7,
-    ["Both 1"] = 8,
-    ["Both 2"] = 9,
-    ["Both 3"] = 10
+    ["Down 4"] = 8,
+    ["Up 4"] = 9,
+    ["Down 5"] = 10,
+    ["Up 5"] = 11,
+    ["Both 1"] = 12,
+    ["Both 2"] = 13,
+    ["Both 3"] = 14,
+    ["Both 4"] = 15,
+    ["Both 5"] = 16
 }
 
 
