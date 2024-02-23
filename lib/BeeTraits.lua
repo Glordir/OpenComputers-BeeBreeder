@@ -110,7 +110,7 @@ function BeeTraits.new(native_bee_traits)
 
     table.insert(data, traits)
 
-    local instance = setmetatable(data, {__index = BeeTraits, __tostring = BeeTraits.toString})
+    local instance = setmetatable(data, {__index = BeeTraits, __tostring = BeeTraits.toString, __eq = BeeTraits.eq})
     return instance
 end
 
@@ -298,6 +298,15 @@ function BeeTraits:toString()
         ", Rain: " .. tostring(self:isTolerantFlyer()) ..
         ", Night: " .. tostring(self:isNocturnal()) ..
         ", Cave: " .. tostring(self:isCaveDwelling()) .. " }"
+end
+
+
+---Checks if the passed bee trait is the same as self
+---@param other BeeTraits
+---@return boolean
+---
+function BeeTraits:eq(other)
+    return self[1] == other[1] and self[2] == other[2]
 end
 
 

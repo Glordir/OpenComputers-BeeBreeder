@@ -1,3 +1,4 @@
+local Bee = require "Bee"
 local BeeContainer = require "BeeContainer"
 local Inventory = require "Inventory"
 
@@ -42,6 +43,25 @@ function Chest:getBees()
     end
 
     return bees
+end
+
+
+---Get the bee in the specified slot
+---@param slot integer
+---@return Bee?
+---
+function Chest:getBee(slot)
+
+    local item = self.transposer:getItemInSlot(self.side, slot)
+    if item == nil then
+        return nil
+    end
+
+    if next(item) == nil or item.name == nil or not string.find(item.name, "^Forestry:bee[DPQ]") then
+        return nil
+    end
+
+    return Bee(item, self.side, slot)
 end
 
 

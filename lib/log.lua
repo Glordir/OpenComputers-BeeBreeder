@@ -29,7 +29,8 @@ function Log.debug(...)
         return
     end
 
-    coloredPrint(colors.lightblue, "[DEBUG] ", ...)
+    -- blue
+    coloredPrint(3300000, "[DEBUG] ", ...)
     logToFile("[DEBUG] ", ...)
 end
 
@@ -38,7 +39,8 @@ function Log.info(...)
         return
     end
 
-    coloredPrint(colors.green, "[INFO] ", ...)
+    -- green
+    coloredPrint(39219, "[INFO] ", ...)
     logToFile("[INFO] ", ...)
 end
 
@@ -47,19 +49,21 @@ function Log.warn(...)
         return
     end
 
-    coloredPrint(colors.yellow, "[WARN] ", ...)
+    -- yellow
+    coloredPrint(15258675, "[WARN] ", ...)
     logToFile("[WARN] ", ...)
 end
 
 function Log.error(...)
-    coloredPrint(colors.red, "[ERROR] ", ...)
+    -- red
+    coloredPrint(12058624, "[ERROR] ", ...)
     logToFile("[ERROR] ", ...)
 end
 
 
 --- Helper Functions (Implementation):
 coloredPrint = function (color, prefix, ...)
-    local old_color = gpu.setForeground(color, true)
+    local old_color = gpu.setForeground(color)
     io.write(prefix)
     print(...)
     gpu.setForeground(old_color)

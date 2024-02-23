@@ -1,4 +1,4 @@
-local Log = require "log"
+local Log = require "Log"
 
 
 local util = {}

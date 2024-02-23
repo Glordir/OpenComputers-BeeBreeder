@@ -1,7 +1,7 @@
 local Component = require "component"
 local Transposer = require "Transposer"
 local BeeContainer = require "BeeContainer"
-local Log = require "log"
+local Log = require "Log"
 
 
 ---@class SortManager

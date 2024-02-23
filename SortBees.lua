@@ -1,7 +1,7 @@
 local Component = require "component"
 local SortManager = require "SortManager"
 local Transposer = require "Transposer"
-local Log = require "log"
+local Log = require "Log"
 
 
 ---Get the target bee traits, input chest and output chest.

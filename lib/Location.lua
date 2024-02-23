@@ -11,15 +11,35 @@
 ---@field public side Side
 ---@field public slot integer
 
+local Location = setmetatable({}, {__call = function (location, ...)
+    return location.new(...)
+end})
 
----Creates a new Location
+
+---Constructor for the Location class
 ---@param side Side
 ---@param slot integer
 ---@return Location
 ---
-local function createLocation(side, slot)
-    return {side = side, slot = slot}
+function Location.new(side, slot)
+    return setmetatable({side = side, slot = slot}, {__tostring = Location.toString, __eq = Location.eq})
 end
 
 
-return createLocation
+---Returns the string representation of the location
+---@return string
+function Location:toString()
+    return "[" .. self.side .. ", " .. self.slot .. "]"
+end
+
+
+---Checks if the passed location is the same as self
+---@param other Location
+---@return boolean
+---
+function Location:eq(other)
+    return self.side == other.side and self.slot == other.slot
+end
+
+
+return Location
