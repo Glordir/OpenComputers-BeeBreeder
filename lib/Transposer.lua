@@ -2,6 +2,7 @@ local Apiary = require "Apiary"
 local Alveary = require "Alveary"
 local Chest = require "Chest"
 local Component = require "component"
+local Inventory = require "Inventory"
 local Location = require "Location"
 local Log = require "Log"
 
@@ -63,18 +64,18 @@ function Transposer:moveBee(bee, new_location)
 end
 
 
----Move the bee into the specified chest.
+---Move the bee into the specified inventory.
 ---@param bee Bee
----@param chest Chest
+---@param inventory Inventory
 ---@param amount integer? # Default value: all the bees in the slot
 ---@return boolean # True if all bees were successfully moved
 ---@return integer amount # The amount of bees that were successfully moved
 ---
-function Transposer:moveBeeIntoChest(bee, chest, amount)
+function Transposer:moveBeeIntoInventory(bee, inventory, amount)
     local bees_in_slot = self.proxy.getSlotStackSize(bee.location.side, bee.location.slot)
     amount = amount or bees_in_slot
 
-    local moved_amount = self.proxy.transferItem(bee.location.side, chest.side, amount, bee.location.slot)
+    local moved_amount = self.proxy.transferItem(bee.location.side, inventory.side, amount, bee.location.slot)
     return moved_amount == amount, moved_amount
 end
 
@@ -179,6 +180,22 @@ function Transposer:findChests()
     end
 
     return chests
+end
+
+
+---Returns the inventory corresponding to the trash can.
+---
+---Currently also returns filing cabinets as trash cans.
+---@return Inventory?
+---
+function Transposer:findTrashCan()
+    for side = 0, 5 do
+        local name = self.proxy.getInventoryName(side)
+        if name == "tile.extrautils:trashcan" or name == "tile.extrautils:filing" then
+            return Inventory(side)
+        end
+    end
+    return nil
 end
 
 

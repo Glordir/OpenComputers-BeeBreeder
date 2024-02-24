@@ -9,6 +9,7 @@ local Transposer = require "Transposer"
 ---@field input_chest Chest
 ---@field buffer_chest Chest
 ---@field output_chest Chest
+---@field trash_can Inventory
 ---@field transposer Transposer
 ---@field available_drones PriorityQueue
 ---@field evaluator Evaluator
@@ -24,15 +25,17 @@ end})
 ---@param input_chest Chest
 ---@param buffer_chest Chest
 ---@param output_chest Chest
+---@param trash_can Inventory
 ---@param target_bee_traits BeeTraits
 ---@return BasicManager
 ---
-function BasicManager.new(input_chest, buffer_chest, output_chest, target_bee_traits)
+function BasicManager.new(input_chest, buffer_chest, output_chest, trash_can, target_bee_traits)
     local instance = {
         transposer = Transposer(Component.transposer.address) --[[@as Transposer]],
         input_chest = input_chest,
         buffer_chest = buffer_chest,
         output_chest = output_chest,
+        trash_can = trash_can,
         available_drones = PriorityQueue(),
         evaluator = Evaluator(target_bee_traits),
         breeder_drones = {}
@@ -161,6 +164,7 @@ function BasicManager:breed()
 end
 
 
+---Move all the bees from the input chest into the buffer chest, and store their information internally.
 function BasicManager:sortNewBees()
     local new_bees = self:getNewBees():getBees()
 
@@ -183,6 +187,10 @@ function BasicManager:sortNewBees()
 end
 
 
+---Move the specified bee into the buffer chest.
+---@param bee Bee
+---@return boolean # true if all the bees in the stack were moved
+---
 function BasicManager:bufferBee(bee)
     for slot = 1, 243 do
         local moved_all, moved_amount = self.transposer:moveBeeIntoSlot(bee, self.buffer_chest, slot)
@@ -198,6 +206,7 @@ end
 
 ---Returns true if both a princess and a drone with the best traits exist in the buffer chest.
 ---@return boolean
+---
 function BasicManager:isFinished()
     if self.female ~= nil and self.female:isPrincess() and self.evaluator:getScore(self.female) == 0 and not self:wasBeeMoved(self.female) and not self.available_drones:empty() then
         local drone, drone_score = self.available_drones:peek()
@@ -207,43 +216,78 @@ function BasicManager:isFinished()
 end
 
 
----Tries to move the princess/queen and at most 1 stack of the best drones into the output chest.
-function BasicManager:moveBestBeesToOutput()
+---Tries to move the princess/queen into the output chest.
+---@return boolean # true if a female bee was moved
+---
+function BasicManager:cleanupBufferedFemale()
     if self.female == nil then
         Log.info("[BasicManager:moveBestBeesToOutput] No princess/queen found.")
-    elseif self:wasBeeMoved(self.female) then
-        local score = self.evaluator:getScore(self.female)
-        Log.warn("[BasicManager:moveBestBeesToOutput] The princess/queen (score " .. tostring(score) ..") was moved.")
+        return false
     else
-        local moved_amount = self.transposer:moveBeeIntoChest(self.female, self.output_chest)
-        local score = self.evaluator:getScore(self.female)
-        if moved_amount == 0 then
-            Log.info("[BasicManager:moveBestBeesToOutput] The princess/queen (score " .. tostring(score) ..") couldn't be moved into the output chest.")
+        local moved_female = self:moveBee(self.female, self.output_chest)
+
+        if moved_female then
+            Log.info("[BasicManager:moveBestBeesToOutput] The princess/queen was moved into the output chest.")
         else
-            self.female = nil
-            Log.info("[BasicManager:moveBestBeesToOutput] The princess/queen with score " .. tostring(score) .. " was moved into the output chest.")
+            Log.warn("[BasicManager:moveBestBeesToOutput] The princess/queen couldn't be moved into the output chest.")
+        end
+
+        return moved_female
+    end
+end
+
+
+---Move all the drones from the buffer chest into the input chest (breeder drones), output chest (target drones) and trash can (useless drones).
+---@return boolean # true if all drones were moved
+---
+function BasicManager:cleanupBufferedDrones()
+    local moved_all_drones = true
+    while not self.available_drones:empty() do
+        local drone, score = self.available_drones:pop()
+        if score == 0 then
+            -- Target drone
+            local moved_full_stack = self:moveBee(drone, self.output_chest)
+            moved_all_drones = moved_all_drones and moved_full_stack
+
+            if not moved_full_stack then
+                Log.warn("[BasicManager:cleanupBufferedDrones] Couldn't move the full stack of target drones into the output chest.")
+            end
+        elseif score == 1002 then
+            -- Breeder drone
+            local moved_full_stack = self:moveBee(drone, self.input_chest)
+            moved_all_drones = moved_all_drones and moved_full_stack
+
+            if not moved_full_stack then
+                Log.warn("[BasicManager:cleanupBufferedDrones] Couldn't move the full stack of breeder drones into the input chest.")
+            end
+        else
+            -- Useless drone
+            local moved_full_stack = self:moveBee(drone, self.trash_can)
+            moved_all_drones = moved_all_drones and moved_full_stack
+
+            if not moved_full_stack then
+                Log.warn("[BasicManager:cleanupBufferedDrones] Couldn't move the full stack of useless drones into the trash can.")
+            end
         end
     end
 
-    if self.available_drones:empty() then
-        Log.info("[BasicManager:moveBestBeesToOutput] No good drones were found.")
-        return
-    end
-    local drone, score = self.available_drones:peek()
+    self.breeder_drones = {}
 
-    if self:wasBeeMoved(drone) then
-        Log.warn("[BasicManager:moveBestBeesToOutput] The best drone (score " .. tostring(score) ..") was moved.")
+    return moved_all_drones
+end
+
+
+---Move the bee into the specified inventory.
+---@param bee Bee
+---@param inventory Inventory
+---@return boolean # true if all the bees in the stack were moved
+---
+function BasicManager:moveBee(bee, inventory)
+    if self:wasBeeMoved(bee) then
+        return false
     else
-        local amount_of_drones = self.transposer:getStackSize(self.buffer_chest.side, drone.location.slot)
-        local moved_amount = self.transposer:moveBeeIntoChest(drone, self.output_chest)
-        if moved_amount == 0 then
-            Log.info("[BasicManager:moveBestBeesToOutput] The drone (score " .. tostring(score) ..") couldn't be moved into the output chest.")
-        elseif moved_amount ~= amount_of_drones then
-            Log.info("[BasicManager:moveBestBeesToOutput] Not all of the best drones (score " .. tostring(score) .. " could be moved into the output chest.")
-        else
-            self.available_drones:pop()
-            Log.info("[BasicManager:moveBestBeesToOutput] The drones with score " .. tostring(score) .. " were moved into the output chest.")
-        end
+        local moved_all_bees = self.transposer:moveBeeIntoInventory(bee, inventory)
+        return moved_all_bees
     end
 end
 

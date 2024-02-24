@@ -67,7 +67,7 @@ function FilterManager:moveBeesIntoChest(bee_container, target_side)
     local moved_bee_amount = 0
     local moved_stack_amount = 0
     for _, bee in ipairs(bee_container:getBees()) do
-        local moved_all_bees_in_stack, amount = self.transposer:moveBeeIntoChest(bee, chest)
+        local moved_all_bees_in_stack, amount = self.transposer:moveBeeIntoInventory(bee, chest)
 
         moved_all_bees = moved_all_bees and moved_all_bees_in_stack
         if amount >= 1 then

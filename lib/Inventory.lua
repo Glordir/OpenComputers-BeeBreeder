@@ -6,7 +6,7 @@
 ---@param side Side
 ---@return Inventory
 ---
-local function createInventory(side, slot)
+local function createInventory(side)
     return {side = side}
 end
 

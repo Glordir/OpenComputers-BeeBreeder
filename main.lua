@@ -87,7 +87,7 @@ end
 
 
 ---Initializes the manager.
----@return BasicManager
+---@return BasicManager?
 ---
 local function init()
 	Log.debug("Started init")
@@ -99,10 +99,15 @@ local function init()
     local buffer_chest = findBufferChest(transposer, input_chest)
     -- The output chest is always at the bottom
     local output_chest = Chest(transposer, 0)
+    local trash_can = transposer:findTrashCan()
+    if trash_can == nil then
+        Log.error("Unable to find the trash can.")
+        return
+    end
 
     local target_bee_traits = findTargetBeeTraits(input_chest)
 
-    local manager = BasicManager(input_chest, buffer_chest, output_chest, target_bee_traits)
+    local manager = BasicManager(input_chest, buffer_chest, output_chest, trash_can, target_bee_traits)
 
 	Log.debug("Finished init")
     return manager
@@ -120,7 +125,6 @@ local function loop(manager)
 
     if manager:isFinished() then
         Log.info("Found a pair with the best traits.")
-        manager:moveBestBeesToOutput()
         return false
     end
 
@@ -136,14 +140,29 @@ local function loop(manager)
 end
 
 
+---Empty the buffer chest.
+---@param manager BasicManager
+---@return boolean # true if all the bees in the buffer chest were moved into other chests / the trash can.
+---
+local function cleanup(manager)
+    return manager:cleanupBufferedFemale() and manager:cleanupBufferedDrones()
+end
+
+
 local function main()
 	local manager = init()
+    if manager == nil then
+        return
+    end
+
     local running = true
 
 	while running do
 		running = loop(manager)
         os.sleep(1)
 	end
+
+    cleanup(manager)
 
     Log.info("The program finished.")
 end
