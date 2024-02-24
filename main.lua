@@ -46,7 +46,7 @@ local function findBufferChest(transposer, input_chest)
         end
     end
 
-    Log.warn("Couldn't find the buffer chest. (Reminder: It needs to be at the same height as the transposer)")
+    Log.error("Couldn't find the buffer chest. (Reminder: It needs to be at the same height as the transposer)")
     return nil
 end
 
@@ -86,12 +86,13 @@ local function findTargetBeeTraits(input_chest)
 end
 
 
----Initializes the manager.
----@return BasicManager?
+---Finds the connected inventories
+---@return Chest? input_chest
+---@return Chest? buffer_chest
+---@return Chest? output_chest
+---@return Inventory? trash_can
 ---
-local function init()
-	Log.debug("Started init")
-
+local function findInventories()
     ---@type Transposer
     local transposer = Transposer(Component.transposer.address)
 
@@ -100,17 +101,16 @@ local function init()
     -- The output chest is always at the bottom
     local output_chest = Chest(transposer, 0)
     local trash_can = transposer:findTrashCan()
-    if trash_can == nil then
+
+    if buffer_chest == nil then
+        Log.error("Unable to find the buffer chest.")
+        return
+    elseif trash_can == nil then
         Log.error("Unable to find the trash can.")
         return
     end
 
-    local target_bee_traits = findTargetBeeTraits(input_chest)
-
-    local manager = BasicManager(input_chest, buffer_chest, output_chest, trash_can, target_bee_traits)
-
-	Log.debug("Finished init")
-    return manager
+    return input_chest, buffer_chest, output_chest, trash_can
 end
 
 
@@ -119,8 +119,6 @@ end
 ---@return boolean
 ---
 local function loop(manager)
-	Log.debug("Started loop")
-
     manager:sortNewBees()
 
     if manager:isFinished() then
@@ -129,13 +127,10 @@ local function loop(manager)
     end
 
     if manager:isAlvearyEmpty() then
-        local successfull_breeding = manager:breed()
-	    Log.debug("Finished loop, returning " .. tostring(successfull_breeding))
-        return successfull_breeding
+        return manager:breed()
     end
 
     Log.debug("Alveary is not empty.")
-    Log.debug("Finished loop")
     return true
 end
 
@@ -145,12 +140,14 @@ end
 ---@return boolean # true if all the bees in the buffer chest were moved into other chests / the trash can.
 ---
 local function cleanup(manager)
+    manager:sortNewBees()
     return manager:cleanupBufferedFemale() and manager:cleanupBufferedDrones()
 end
 
 
-local function main()
-	local manager = init()
+local function breedNewSpecies(input_chest, buffer_chest, output_chest, trash_can)
+    local target_bee_traits = findTargetBeeTraits(input_chest)
+    local manager = BasicManager(input_chest, buffer_chest, output_chest, trash_can, target_bee_traits)
     if manager == nil then
         return
     end
@@ -162,9 +159,43 @@ local function main()
         os.sleep(1)
 	end
 
+    os.sleep(5)
     cleanup(manager)
 
-    Log.info("The program finished.")
+    Log.info("Finished breeding species " .. target_bee_traits:getSpecies())
+end
+
+
+---Check if a non-Magenta bee is in the chests
+---@param chest Chest
+---@return boolean
+---
+local function isNewSpeciesAvailable(chest)
+    local bees = chest:getBees():getBees()
+    for _, bee in ipairs(bees) do
+        if bee:getSpecies() ~= "Magenta" then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+local function main()
+    local input_chest, buffer_chest, output_chest, trash_can = findInventories()
+    local to_breed = isNewSpeciesAvailable(input_chest)
+
+	while to_breed do
+        local successfull = breedNewSpecies(input_chest, buffer_chest, output_chest, trash_can)
+        if successfull == false then
+            return
+        end
+
+        to_breed = isNewSpeciesAvailable(input_chest)
+    end
+
+    Log.info("No more new species found. Exiting program")
 end
 
 

@@ -13,6 +13,7 @@ local Transposer = require "Transposer"
 ---@field transposer Transposer
 ---@field available_drones PriorityQueue
 ---@field evaluator Evaluator
+---@field target_species string
 ---@field breeder_drones Bee[]
 ---@field female Bee?
 ---
@@ -38,6 +39,7 @@ function BasicManager.new(input_chest, buffer_chest, output_chest, trash_can, ta
         trash_can = trash_can,
         available_drones = PriorityQueue(),
         evaluator = Evaluator(target_bee_traits),
+        target_species = target_bee_traits:getSpecies(),
         breeder_drones = {}
     }
     instance.alveary = instance.transposer:findAlveary()
@@ -169,19 +171,21 @@ function BasicManager:sortNewBees()
     local new_bees = self:getNewBees():getBees()
 
     for _, bee in ipairs(new_bees) do
-        if bee:isDrone() then
-            local started_new_stack = self:bufferBee(bee)
-            if started_new_stack then
-                local score = self.evaluator:getScore(bee)
-                self.available_drones:put(bee, score)
+        if bee:getSpecies() == "Magenta" or bee:getSpecies() == self.target_species then
+            if bee:isDrone() then
+                local started_new_stack = self:bufferBee(bee)
+                if started_new_stack then
+                    local score = self.evaluator:getScore(bee)
+                    self.available_drones:put(bee, score)
 
-                if score == 1002 then
-                    table.insert(self.breeder_drones, bee)
+                    if score == 1002 then
+                        table.insert(self.breeder_drones, bee)
+                    end
                 end
+            else
+                self.female = bee
+                self:bufferBee(bee)
             end
-        else
-            self.female = bee
-            self:bufferBee(bee)
         end
     end
 end
