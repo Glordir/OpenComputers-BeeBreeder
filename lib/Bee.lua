@@ -1,4 +1,4 @@
-local BeeTraits = require "BeeTraits"
+local BeeTraits = require "BeeTraitsCompressed"
 local Location = require "Location"
 local Log = require "Log"
 
@@ -10,8 +10,8 @@ local Log = require "Log"
 
 
 ---@class Bee
----@field public active BeeTraits? Only exists for bees that are analyzed
----@field public inactive BeeTraits? Only exists for bees that are analyzed
+---@field public active IBeeTraits? Only exists for bees that are analyzed
+---@field public inactive IBeeTraits? Only exists for bees that are analyzed
 ---@field public gender Gender
 ---@field public location Location
 ---@field private species string? Only exists for bees that are not analyzed

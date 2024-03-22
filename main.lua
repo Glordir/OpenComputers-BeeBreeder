@@ -53,7 +53,7 @@ end
 
 ---Construct the target bee traits from the breeder bee (Magenta) and the 2nd bee (target species) in the input chest.
 ---@param input_chest Chest
----@return BeeTraits?
+---@return IBeeTraits?
 ---
 local function findTargetBeeTraits(input_chest)
     local contained_bees = input_chest:getBees():getBees()

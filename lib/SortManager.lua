@@ -8,7 +8,7 @@ local Log = require "Log"
 ---@field private transposer Transposer
 ---@field private input_chest Chest
 ---@field private output_chest Chest
----@field private target_bee_traits BeeTraits
+---@field private target_bee_traits IBeeTraits
 ---
 local SortManager = setmetatable({}, {__call = function (manager, ...)
     return manager.new(...)
@@ -18,7 +18,7 @@ end})
 ---Constructor for the SortManager class
 ---@param input_chest Chest
 ---@param output_chest Chest # Needs to be a Compressed Chest
----@param target_bee_traits BeeTraits
+---@param target_bee_traits IBeeTraits
 ---@return SortManager
 ---
 function SortManager.new(input_chest, output_chest, target_bee_traits)
@@ -65,7 +65,7 @@ end
 ---@param bee Bee
 ---@return integer
 function SortManager:getBeeDelta(bee)
-    ---@type BeeTraits[]
+    ---@type IBeeTraits[]
     local genes = {bee.active, bee.inactive}
 
     local delta = 0

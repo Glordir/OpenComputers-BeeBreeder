@@ -1,5 +1,4 @@
 local BasicManager = require "BasicManager"
-local BeeTraits = require "BeeTraits"
 local writeVariableToFile = require("util").writeVariableToFile
 local prettyPrint = require("util").prettyPrint
 
@@ -7,7 +6,7 @@ local prettyPrint = require("util").prettyPrint
 ---Print the bee in a pretty format
 ---@param bee Bee
 local function printBee(bee)
-    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee:getSpecies())
+    print("Side: " .. bee.location.side .. " \tSlot: " .. bee.location.slot .. " \tBee: " .. bee:toString())
 end
 
 

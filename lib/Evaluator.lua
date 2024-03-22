@@ -1,8 +1,8 @@
 ---@class Evaluator
----@field private target_bee_traits BeeTraits
----@field public new fun(target_bee_traits: BeeTraits): Evaluator
+---@field private target_bee_traits IBeeTraits
+---@field public new fun(target_bee_traits: IBeeTraits): Evaluator
 ---@field public getScore fun(self: Evaluator, bee: Bee): integer
----@field private getGeneScore fun(self: Evaluator, bee_traits: BeeTraits): integer
+---@field private getGeneScore fun(self: Evaluator, bee_traits: IBeeTraits): integer
 ---
 local Evaluator = setmetatable({}, {__call = function (evaluator, ...)
     return evaluator.new(...)
@@ -10,7 +10,7 @@ end})
 
 
 ---Constructor for the Evaluator class
----@param target_bee_traits BeeTraits
+---@param target_bee_traits IBeeTraits
 ---@return Evaluator
 ---
 function Evaluator.new(target_bee_traits)
@@ -33,7 +33,7 @@ end
 
 
 ---Calculates the difference between the passed gene and the target bee traits.
----@param bee_traits BeeTraits
+---@param bee_traits IBeeTraits
 ---@return integer
 ---
 function Evaluator:getGeneScore(bee_traits)

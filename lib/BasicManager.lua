@@ -27,7 +27,7 @@ end})
 ---@param buffer_chest Chest
 ---@param output_chest Chest
 ---@param trash_can Inventory
----@param target_bee_traits BeeTraits
+---@param target_bee_traits IBeeTraits
 ---@return BasicManager
 ---
 function BasicManager.new(input_chest, buffer_chest, output_chest, trash_can, target_bee_traits)

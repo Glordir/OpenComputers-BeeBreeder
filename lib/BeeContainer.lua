@@ -1,12 +1,12 @@
 local Bee = require "Bee"
-local BeeTraits = require "BeeTraits"
+local BeeTraits = require "BeeTraitsCompressed"
 local Log = require "Log"
 
 
 ---@class BeeContainer
 ---@field private bees Bee[]
----@field private highest_bee_traits BeeTraits?
----@field private lowest_bee_traits BeeTraits?
+---@field private highest_bee_traits IBeeTraits?
+---@field private lowest_bee_traits IBeeTraits?
 ---@field private species table<string, boolean> A Set, if species["Noble"] == true then this container contains a Noble bee
 ---@field private flowers table<Flower, boolean> A Set, if flowers["Cacti"] == true then this container contains a bee that requires a cactus as a flower
 ---
@@ -98,8 +98,8 @@ end
 ---Updates the trait in highest_bee_traits and lowest_bee_traits to include the passed bee 
 ---@generic T
 ---@param bee Bee
----@param getTrait fun(bee: BeeTraits):`T`
----@param setTrait fun(bee: BeeTraits, trait: T)
+---@param getTrait fun(bee: IBeeTraits):`T`
+---@param setTrait fun(bee: IBeeTraits, trait: T)
 function BeeContainer:updateStatisticsTrait(bee, getTrait, setTrait)
     local active_fertility = getTrait(bee.active)
     local inactive_fertility = getTrait(bee.inactive)
@@ -114,8 +114,8 @@ end
 ---Updates the boolean trait in highest_bee_traits and lowest_bee_traits to include the passed bee 
 ---@generic T
 ---@param bee Bee
----@param getBooleanTrait fun(bee: BeeTraits): boolean
----@param setBooleanTrait fun(bee: BeeTraits, boolean_trait: boolean)
+---@param getBooleanTrait fun(bee: IBeeTraits): boolean
+---@param setBooleanTrait fun(bee: IBeeTraits, boolean_trait: boolean)
 function BeeContainer:updateStatisticsBooleanTrait(bee, getBooleanTrait, setBooleanTrait)
     local active_fertility = getBooleanTrait(bee.active)
     local inactive_fertility = getBooleanTrait(bee.inactive)
@@ -151,14 +151,14 @@ end
 
 
 ---Gets all the lowest bee traits (if any bees exist)
----@return BeeTraits?
+---@return IBeeTraits?
 function BeeContainer:getLowestBeeTraits()
     return self.lowest_bee_traits
 end
 
 
 ---Gets all the highest bee traits (if any bees exist)
----@return BeeTraits?
+---@return IBeeTraits?
 function BeeContainer:getHighestBeeTraits()
     return self.highest_bee_traits
 end
