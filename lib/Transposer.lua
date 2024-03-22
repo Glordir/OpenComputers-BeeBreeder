@@ -3,6 +3,7 @@ local Alveary = require "Alveary"
 local Chest = require "Chest"
 local Component = require "component"
 local Inventory = require "Inventory"
+local Log = require "Log"
 
 
 ---@class Transposer
@@ -109,6 +110,27 @@ function Transposer:getStackSize(side, slot)
     end
 
     return self.proxy.getSlotStackSize(side, slot)
+end
+
+
+---Returns the breeder block, if it is connected
+---@return BreederBlock?
+---
+function Transposer:findBreederBlock()
+    local alveary = self:findAlveary()
+    if alveary ~= nil then
+        return alveary
+    end
+
+    local apiaries = self:findApiaries()
+    local apiary_count = #apiaries
+    if apiary_count == 0 then
+        Log.warn("Found no alveary and no apiary!")
+    elseif apiary_count > 1 then
+        Log.warn("Found more than 1 apiary!")
+    else
+        return apiaries[1]
+    end
 end
 
 

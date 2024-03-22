@@ -5,7 +5,7 @@ local PriorityQueue = require "PriorityQueue"
 local Transposer = require "Transposer"
 
 ---@class BasicManager The basic manager of all physical connections and interactions.
----@field alveary Alveary
+---@field breeder_block BreederBlock
 ---@field input_chest Chest
 ---@field buffer_chest Chest
 ---@field output_chest Chest
@@ -42,7 +42,7 @@ function BasicManager.new(input_chest, buffer_chest, output_chest, trash_can, ta
         target_species = target_bee_traits:getSpecies(),
         breeder_drones = {}
     }
-    instance.alveary = instance.transposer:findAlveary()
+    instance.breeder_block = instance.transposer:findBreederBlock()
 
     return setmetatable(instance, {__index = BasicManager})
 end
@@ -92,7 +92,7 @@ function BasicManager:useBreederDrone()
                 self.breeder_drones[i] = nil
             end
 
-            self.alveary:addDrone(drone)
+            self.breeder_block:addDrone(drone)
             return true
         end
     end
@@ -115,7 +115,7 @@ function BasicManager:breed()
     end
 
     if self.female:isQueen() then
-        self.alveary:addPrincess(self.female)
+        self.breeder_block:addPrincess(self.female)
         self.female = nil
         return true
     end
@@ -135,7 +135,7 @@ function BasicManager:breed()
             return false
         end
 
-        self.alveary:addPrincess(self.female)
+        self.breeder_block:addPrincess(self.female)
         self.female = nil
         Log.info("[BasicManager:breed] Breeding a breeder drone with a princess with score " .. tostring(princess_score) .. ".")
 
@@ -157,8 +157,8 @@ function BasicManager:breed()
         self.available_drones:pop()
     end
 
-    self.alveary:addDrone(drone)
-    self.alveary:addPrincess(self.female)
+    self.breeder_block:addDrone(drone)
+    self.breeder_block:addPrincess(self.female)
     self.female = nil
     Log.info("[BasicManager:breed] Breeding a princess with score " .. tostring(princess_score) .. " with a drone with score " .. tostring(priority) .. ".")
 
@@ -299,7 +299,7 @@ end
 
 
 function BasicManager:isBreederReady()
-    return self.alveary:mayBreed()
+    return self.breeder_block:mayBreed()
 end
 
 

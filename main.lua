@@ -130,7 +130,7 @@ local function loop(manager)
         return manager:breed()
     end
 
-    Log.debug("Alveary is not empty.")
+    Log.debug("Breeder Block is not empty.")
     return true
 end
 
