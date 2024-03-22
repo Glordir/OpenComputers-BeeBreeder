@@ -92,7 +92,7 @@ function BasicManager:useBreederDrone()
                 self.breeder_drones[i] = nil
             end
 
-            self.transposer:moveDrone(drone, self.alveary)
+            self.alveary:addDrone(drone)
             return true
         end
     end
@@ -115,7 +115,7 @@ function BasicManager:breed()
     end
 
     if self.female:isQueen() then
-        self.transposer:moveFemale(self.female, self.alveary)
+        self.alveary:addPrincess(self.female)
         self.female = nil
         return true
     end
@@ -135,7 +135,7 @@ function BasicManager:breed()
             return false
         end
 
-        self.transposer:moveFemale(self.female, self.alveary)
+        self.alveary:addPrincess(self.female)
         self.female = nil
         Log.info("[BasicManager:breed] Breeding a breeder drone with a princess with score " .. tostring(princess_score) .. ".")
 
@@ -157,8 +157,8 @@ function BasicManager:breed()
         self.available_drones:pop()
     end
 
-    self.transposer:moveDrone(drone, self.alveary)
-    self.transposer:moveFemale(self.female, self.alveary)
+    self.alveary:addDrone(drone)
+    self.alveary:addPrincess(self.female)
     self.female = nil
     Log.info("[BasicManager:breed] Breeding a princess with score " .. tostring(princess_score) .. " with a drone with score " .. tostring(priority) .. ".")
 
@@ -205,6 +205,8 @@ function BasicManager:bufferBee(bee)
             return new_stack_size == moved_amount
         end
     end
+
+    return false
 end
 
 
@@ -296,8 +298,8 @@ function BasicManager:moveBee(bee, inventory)
 end
 
 
-function BasicManager:isAlvearyEmpty()
-    return self.transposer:getStackSize(self.alveary.side, self.alveary.slots.princess --[[@as integer]]) == 0
+function BasicManager:isBreederReady()
+    return self.alveary:mayBreed()
 end
 
 

@@ -62,7 +62,7 @@ local function findTargetBeeTraits(input_chest)
     for _, bee in ipairs(contained_bees) do
         if bee:getSpecies() == "Magenta" and bee:isAnalyzed() then
             target_bee_traits = bee.active:copy()
-            Log.debug("Found the breeder bee (Magenta).")
+            Log.info("Found the breeder bee (Magenta).")
         end
     end
 
@@ -75,7 +75,7 @@ local function findTargetBeeTraits(input_chest)
         local bee_species = bee:getSpecies()
         if bee_species ~= "Magenta" then
             target_bee_traits:setSpecies(bee_species)
-            Log.debug("Found the bee with the target species (" .. bee_species .. ").")
+            Log.info("Found the bee with the target species (" .. bee_species .. ").")
 
             return target_bee_traits
         end
@@ -126,7 +126,7 @@ local function loop(manager)
         return false
     end
 
-    if manager:isAlvearyEmpty() then
+    if manager:isBreederReady() then
         return manager:breed()
     end
 

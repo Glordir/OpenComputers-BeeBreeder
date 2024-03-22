@@ -5,7 +5,7 @@ local gpu = component.getPrimary("gpu")
 
 
 --- Config:
-local C = {log_level = "debug", logfile = "log.txt"}
+local C = {log_level = "info", logfile = "log.txt"}
 
 
 --- Helper Functions (Forward Declaration):

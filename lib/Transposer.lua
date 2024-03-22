@@ -3,8 +3,6 @@ local Alveary = require "Alveary"
 local Chest = require "Chest"
 local Component = require "component"
 local Inventory = require "Inventory"
-local Location = require "Location"
-local Log = require "Log"
 
 
 ---@class Transposer
@@ -25,26 +23,6 @@ function Transposer.new(address)
     local instance = setmetatable({}, Transposer)
     instance.proxy = Component.proxy(address)
     return instance
-end
-
-
----Move the princess/queen into the princess/queen slot of the alveary
----@param female Bee
----@param alveary Alveary
----@return boolean true if the princess was moved
----
-function Transposer:moveFemale(female, alveary)
-    return self:moveBee(female, Location(alveary.side, alveary.slots.princess --[[@as integer]]))
-end
-
-
----Move the drone into the drone slot of the alveary
----@param drone Bee
----@param alveary Alveary
----@return boolean true if the drone was moved
----
-function Transposer:moveDrone(drone, alveary)
-    return self:moveBee(drone, Location(alveary.side, alveary.slots.drone --[[@as integer]]))
 end
 
 
@@ -143,7 +121,7 @@ function Transposer:findApiaries()
     for side = 0, 5 do
         local name = self.proxy.getInventoryName(side)
         if name == "tile.for.apiculture" then
-            table.insert(apiaries, Apiary(side))
+            table.insert(apiaries, Apiary(side, self))
         end
     end
 
@@ -158,7 +136,7 @@ function Transposer:findAlveary()
     for side = 0, 5 do
         local name = self.proxy.getInventoryName(side)
         if name == "tile.for.alveary" then
-            return Alveary(side)
+            return Alveary(side, self)
         end
     end
 end

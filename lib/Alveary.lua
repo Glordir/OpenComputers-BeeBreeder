@@ -1,31 +1,36 @@
-local Inventory = require "Inventory"
+local BreederBlock = require "BreederBlock"
 
 
----@class Alveary: Inventory
----@field public slots ALVEARY_SLOTS
-
-
----@enum ALVEARY_SLOTS The slots in an Alveary
+---@class Alveary: BreederBlock
+---@field private transposer Transposer
 ---
-local ALVEARY_SLOTS = {
-    drone = 2,
-    princess = 1
-}
+local Alveary = setmetatable({}, {__call = function (alveary, ...)
+    return alveary.new(...)
+end,
+__index = BreederBlock
+})
 
 
 ---Creates a new Alveary
 ---@param side Side
+---@param transposer Transposer
 ---@return Alveary
 ---
-local function createAlveary(side)
-    local inventory = Inventory(side)
+function Alveary.new(side, transposer)
+    local alveary = BreederBlock(side, transposer) --[[@as Alveary]]
 
-    local apiary = setmetatable({
-        slots = ALVEARY_SLOTS
-    }, {__index = inventory}) --[[@as Apiary]]
-
-    return apiary
+    return setmetatable(alveary, {__index = Alveary})
 end
 
 
-return createAlveary
+---Check if the alveary is ready for a new breeding pair
+---@param self Alveary
+---@return boolean
+---
+function Alveary:mayBreed()
+    -- Return true if the princess slot is empty
+    return self.transposer:getStackSize(self.side, self:getPrincessSlot()) == 0
+end
+
+
+return Alveary
