@@ -1,6 +1,5 @@
 local Bee = require "Bee"
-local BeeTraits = require "BeeTraitsCompressed"
-local Log = require "Log"
+local BeeTraits = require "BeeTraits"
 
 
 ---@class BeeContainer

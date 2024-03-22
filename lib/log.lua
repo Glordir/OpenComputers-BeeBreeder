@@ -1,4 +1,3 @@
-local colors = require "colors"
 local component = require "component"
 
 local gpu = component.getPrimary("gpu")

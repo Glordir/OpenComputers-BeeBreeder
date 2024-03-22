@@ -1,4 +1,4 @@
-local BeeTraits = require "BeeTraitsCompressed"
+local BeeTraits = require "BeeTraits"
 local Location = require "Location"
 local Log = require "Log"
 
