@@ -38,10 +38,10 @@ function BeeTraits.new(native_bee_traits)
     data.effect = FromNative.effect(native_bee_traits.effect)
     data.lifespan = FromNative.lifespan(native_bee_traits.lifespan)
     data.temperature_tolerance = FromNative.tolerance(native_bee_traits.temperatureTolerance)
-    data.tolerant_flyer = native_bee_traits.tolerantFlyer
-    data.nocturnal = native_bee_traits.nocturnal
-    data.cave_dwelling = native_bee_traits.caveDwelling
     data.humidity_tolerance = FromNative.tolerance(native_bee_traits.humidityTolerance)
+    data.is_tolerant_flyer = native_bee_traits.tolerantFlyer
+    data.is_nocturnal = native_bee_traits.nocturnal
+    data.is_cave_dwelling = native_bee_traits.caveDwelling
 
     local instance = setmetatable(data, {__index = BeeTraits, __tostring = BeeTraits.toString, __eq = BeeTraits.eq})
     return instance
