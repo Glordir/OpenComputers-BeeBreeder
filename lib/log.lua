@@ -1,10 +1,6 @@
 local component = require "component"
-
 local gpu = component.getPrimary("gpu")
-
-
---- Config:
-local C = {log_level = "info", logfile = "log.txt"}
+local Config = require "Config"
 
 
 --- Helper Functions (Forward Declaration):
@@ -17,10 +13,10 @@ local Log = {}
 
 
 local log_level_name_table = {debug = 0, info = 1, warn = 2, error = 3}
-Log.log_level = log_level_name_table[C.log_level]
+Log.log_level = log_level_name_table[Config.logLevel]
 
-Log.write_to_file = C.logfile ~= nil
-Log.logfile = io.open(C.logfile, "w")
+Log.write_to_file = Config.logFilePath ~= ""
+Log.logfile = io.open(Config.logFilePath, "w")
 
 
 function Log.debug(...)
