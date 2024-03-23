@@ -1,5 +1,6 @@
-local Log = require "Log"
 local BreederBlock = require "BreederBlock"
+local Config = require "Config"
+local Log = require "Log"
 
 
 ---@class Apiary: BreederBlock
@@ -32,6 +33,10 @@ function Apiary:mayBreed()
     -- Return false if the princess slot is full
     if self.transposer:getStackSize(self.side, self:getPrincessSlot()) ~= 0 then
         return false
+    end
+
+    if Config.allowOblivionFrameDestructionInApiary then
+        return true
     end
 
     -- Return false if the apiary contains an Oblivion frame with more than 75% damage
