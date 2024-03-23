@@ -4,6 +4,7 @@ local Chest = require "Chest"
 local Component = require "component"
 local Inventory = require "Inventory"
 local Log = require "Log"
+local Config = require "Config"
 
 
 ---@class Transposer
@@ -164,17 +165,32 @@ function Transposer:findAlveary()
 end
 
 
----Returns an array of all connected chests
----
----Currently supports only Compressed Chests
+---Returns an array of all connected input chests
 ---@return Chest[]
 ---
-function Transposer:findChests()
+function Transposer:findInputChests()
     ---@type Chest[]
     local chests = {}
     for side = 0, 5 do
         local name = self.proxy.getInventoryName(side)
-        if name == "tile.CompressedChest" then
+        if name == Config.inputInventoryName then
+            table.insert(chests, Chest(self, side))
+        end
+    end
+
+    return chests
+end
+
+
+---Returns an array of all connected output chests
+---@return Chest[]
+---
+function Transposer:findOutputChests()
+    ---@type Chest[]
+    local chests = {}
+    for side = 0, 5 do
+        local name = self.proxy.getInventoryName(side)
+        if name == Config.outputInventoryName then
             table.insert(chests, Chest(self, side))
         end
     end

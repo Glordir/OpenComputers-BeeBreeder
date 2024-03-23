@@ -19,7 +19,7 @@ local function findInputChest(transposer)
     local input_chest = nil
 
     repeat
-        for _, chest in ipairs(transposer:findChests()) do
+        for _, chest in ipairs(transposer:findInputChests()) do
             if chest.side > 1 then
                 local contained_bees = chest:getBees():getBees()
                 if next(contained_bees) ~= nil then
@@ -40,7 +40,8 @@ end
 ---@return Chest?
 ---
 local function findBufferChest(transposer, input_chest)
-    for _, chest in ipairs(transposer:findChests()) do
+    -- Todo: Remove the buffer chest, for now it just uses a chest with the same type as the input chest
+    for _, chest in ipairs(transposer:findInputChests()) do
         if chest.side > 1 and chest.side ~= input_chest.side then
             Log.debug("Found the buffer chest on side " .. tostring(chest.side) .. ".")
             return chest
