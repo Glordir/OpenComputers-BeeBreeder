@@ -199,15 +199,13 @@ function Transposer:findOutputChests()
 end
 
 
----Returns the inventory corresponding to the trash can.
----
----Currently also returns filing cabinets as trash cans.
+---Returns the inventory corresponding to the trash output.
 ---@return Inventory?
 ---
 function Transposer:findTrashCan()
     for side = 0, 5 do
         local name = self.proxy.getInventoryName(side)
-        if name == "tile.extrautils:trashcan" or name == "tile.extrautils:filing" then
+        if Config.trashInventoryNames[name] == true then
             return Inventory(side)
         end
     end

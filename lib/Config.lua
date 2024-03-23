@@ -27,7 +27,7 @@ local function setDefaultsIfInvalid()
     setDefaultIfInvalid("breederSpecies", "Magenta")
     setDefaultIfInvalid("allowOblivionFrameDestructionInApiary", false)
     setDefaultIfInvalid("inputInventoryName", "tile.CompressedChest")
-    setDefaultIfInvalid("trashInventoryNames", {"tile.extrautils:trashcan", "tile.extrautils:filing"})
+    setDefaultIfInvalid("trashInventoryNames", {["tile.extrautils:trashcan"] = true, ["tile.extrautils:filing"] = true})
     setDefaultIfInvalid("logLevel", "info")
     setDefaultIfInvalid("logFilePath", "log.txt")
 end
