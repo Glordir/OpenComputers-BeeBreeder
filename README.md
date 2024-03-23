@@ -22,17 +22,16 @@ The output chest needs to be below the transposer. The input chest, buffer chest
 
 ## How To Use
 
-1. Insert at least 32 breeder drones (Magenta) into the input chest.
+1. Insert at least 32 breeder drones (eg. Magenta) into the input chest.
 2. Insert one bee with the target species as the active trait into the input chest.
-3. Make sure that at least one bee in the input chest is a princess (Magenta or Target species)
+3. Make sure that at least one bee in the input chest is a princess (Breeder or Target species)
 4. Start the program (main) and press Enter.
 
 ## Notes
 
 - Breeder Bee = The bee with the stats that you want, except the species.
-- The breeder bee needs to have the species Magenta.
 - All Bees need to be analyzed.
-- All bees with an active species other than Magenta or the target species in the input chest will be ignored.
+- All bees with an active species other than the breeder species or the target species in the input chest will be ignored.
 - To breed the target stats onto multiple species, I just add one princess per target species into the input chest. The programm will then breed the target stats onto the different princesses.
 
 

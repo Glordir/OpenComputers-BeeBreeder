@@ -3,6 +3,8 @@ local Evaluator = require "Evaluator"
 local Log = require "Log"
 local PriorityQueue = require "PriorityQueue"
 local Transposer = require "Transposer"
+local Config = require "Config"
+
 
 ---@class BasicManager The basic manager of all physical connections and interactions.
 ---@field breeder_block BreederBlock
@@ -171,7 +173,7 @@ function BasicManager:sortNewBees()
     local new_bees = self:getNewBees():getBees()
 
     for _, bee in ipairs(new_bees) do
-        if bee:getSpecies() == "Magenta" or bee:getSpecies() == self.target_species then
+        if bee:getSpecies() == Config.breederSpecies or bee:getSpecies() == self.target_species then
             if bee:isDrone() then
                 local started_new_stack = self:bufferBee(bee)
                 if started_new_stack then

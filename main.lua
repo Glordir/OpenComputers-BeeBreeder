@@ -3,6 +3,7 @@ local BasicManager = require "BasicManager"
 local Component = require "component"
 local Transposer = require "Transposer"
 local Chest = require "Chest"
+local Config = require "Config"
 
 
 ---Find the input chest.
@@ -10,7 +11,7 @@ local Chest = require "Chest"
 ---@return Chest
 ---
 local function findInputChest(transposer)
-    print("Make sure that the input chest contains the analyzed breeder bee (Magenta) and a bee with the target species.")
+    print("Make sure that the input chest contains the analyzed breeder bee (" .. Config.breederSpecies .. ") and a bee with the target species.")
     print("The buffer chest needs to be empty!")
     print("To continue, press Enter ...")
     local _ = io.read()
@@ -51,7 +52,7 @@ local function findBufferChest(transposer, input_chest)
 end
 
 
----Construct the target bee traits from the breeder bee (Magenta) and the 2nd bee (target species) in the input chest.
+---Construct the target bee traits from the breeder bee and the 2nd bee (target species) in the input chest.
 ---@param input_chest Chest
 ---@return IBeeTraits?
 ---
@@ -60,20 +61,20 @@ local function findTargetBeeTraits(input_chest)
     local target_bee_traits
 
     for _, bee in ipairs(contained_bees) do
-        if bee:getSpecies() == "Magenta" and bee:isAnalyzed() then
+        if bee:getSpecies() == Config.breederSpecies and bee:isAnalyzed() then
             target_bee_traits = bee.active:copy()
-            Log.info("Found the breeder bee (Magenta).")
+            Log.info("Found the breeder bee (" .. Config.breederSpecies .. ").")
         end
     end
 
     if target_bee_traits == nil then
-        Log.warn("Unable to find the breeder bee (Magenta) in the input chest.")
+        Log.warn("Unable to find the breeder bee (" .. Config.breederSpecies .. ") in the input chest.")
         return nil
     end
 
     for _, bee in ipairs(contained_bees) do
         local bee_species = bee:getSpecies()
-        if bee_species ~= "Magenta" then
+        if bee_species ~= Config.breederSpecies then
             target_bee_traits:setSpecies(bee_species)
             Log.info("Found the bee with the target species (" .. bee_species .. ").")
 
@@ -166,14 +167,14 @@ local function breedNewSpecies(input_chest, buffer_chest, output_chest, trash_ca
 end
 
 
----Check if a non-Magenta bee is in the chests
+---Check if a non-breederSpecies bee is in the chests
 ---@param chest Chest
 ---@return boolean
 ---
 local function isNewSpeciesAvailable(chest)
     local bees = chest:getBees():getBees()
     for _, bee in ipairs(bees) do
-        if bee:getSpecies() ~= "Magenta" then
+        if bee:getSpecies() ~= Config.breederSpecies then
             return true
         end
     end
@@ -183,6 +184,8 @@ end
 
 
 local function main()
+    Config.loadFromFile()
+
     local input_chest, buffer_chest, output_chest, trash_can = findInventories()
     local to_breed = isNewSpeciesAvailable(input_chest)
 
