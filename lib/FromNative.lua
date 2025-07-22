@@ -76,33 +76,38 @@ end
 
 ---@enum Flower
 local flower_name_to_number = {
-    Books = 1,
-    Cacti = 2,
-    ["Dead Bushes"] = 3,
-    End = 4,
-    Ender = 5,
-    ["Exotic Flowers"] = 6,
-    Flowers = 7,
-    Fruit = 8,
-    Gourds = 9,
-    Jungle = 10,
-    Leaves = 11,
-    ["Lily Pads"] = 12,
-    Mushroom = 13,
-    Mystical = 14,
-    ["Mystical Flowers"] = 15,
-    Nether = 16,
-    Node = 17,
-    Redstone = 18,
-    Reeds = 19,
-    Rocks = 20,
-    Saplings = 21,
-    Sea = 22,
-    Snow = 23,
-    ["Thaumic Flowers"] = 24,
-    ["Thaumic Shards"] = 25,
-    Wheat = 26,
-    Wood = 27
+    -- Forestry:
+    flowersCacti = 1,
+    flowersEnd = 2,
+    flowersGourd = 3,
+    flowersJungle = 4,
+    flowersMushrooms = 5,
+    flowersNether = 6,
+    flowersSnow = 7,
+    flowersVanilla = 8,
+    flowersWheat = 9,
+    -- Computronics
+    ['computronics.flowers.sea'] = 10,
+    -- ExtraBees
+    ['extrabees.flower.book'] = 11,
+    ['extrabees.flower.dead'] = 12,
+    ['extrabees.flower.fruit'] = 13,
+    ['extrabees.flower.leaves'] = 14,
+    ['extrabees.flower.mystical'] = 15,
+    ['extrabees.flower.redstone'] = 16,
+    ['extrabees.flower.rock'] = 17,
+    ['extrabees.flower.sapling'] = 18,
+    ['extrabees.flower.sugar'] = 19,
+    ['extrabees.flower.water'] = 20,
+    ['extrabees.flower.wood'] = 21,
+    -- Unknown
+    ['for.flowers.flaming'] = 22,
+    -- MagicBees
+    flowersArsMagica = 23,
+    flowersBookshelf = 24,
+    flowersBotania = 25,
+    flowersThaumcraft = 26,
+    flowersThaumcraftAuraNode = 27
 }
 
 
@@ -112,8 +117,8 @@ local flower_name_to_number = {
 function FromNative.flower(flower_name)
     local flower_number = flower_name_to_number[flower_name]
     if flower_number == nil then
-        Log.warn("[FromNative.flower] cannot convert the given flower '" .. tostring(flower_number) .. "' to an integer. Using default value 7 (Flowers)")
-        return 7
+        Log.warn("[FromNative.flower] cannot convert the given flower '" .. tostring(flower_number) .. "' to an integer. Using default value (Vanilla Flowers)")
+        return flower_name_to_number.flowersVanilla
     end
     return flower_number
 end
