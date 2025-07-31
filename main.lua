@@ -18,9 +18,10 @@ local function findInputChest(transposer)
 
     local input_chest = nil
 
+    -- Todo: Remove the repeat-loop, exit with an error instead
     repeat
         for _, chest in ipairs(transposer:findInputChests()) do
-            if chest.side > 1 then
+            if chest.side > 0 then
                 local contained_bees = chest:getBees():getBees()
                 if next(contained_bees) ~= nil then
                     input_chest = chest
@@ -42,13 +43,13 @@ end
 local function findBufferChest(transposer, input_chest)
     -- Todo: Remove the buffer chest, for now it just uses a chest with the same type as the input chest
     for _, chest in ipairs(transposer:findInputChests()) do
-        if chest.side > 1 and chest.side ~= input_chest.side then
+        if chest.side > 0 and chest.side ~= input_chest.side then
             Log.debug("Found the buffer chest on side " .. tostring(chest.side) .. ".")
             return chest
         end
     end
 
-    Log.error("Couldn't find the buffer chest. (Reminder: It needs to be at the same height as the transposer)")
+    Log.error("Couldn't find the buffer chest.")
     return nil
 end
 
@@ -73,6 +74,7 @@ local function findTargetBeeTraits(input_chest)
         return nil
     end
 
+    -- Todo: Enable choosing of inactive species as the target species
     for _, bee in ipairs(contained_bees) do
         local bee_species = bee:getSpecies()
         if bee_species ~= Config.breederSpecies then
